@@ -54,16 +54,7 @@ pipeline {
                     steps {
                         echo 'Running unit tests...'
                         echo 'Unit tests completed'
-                        script {
-                            // Check if build should fail
-                            def shouldFail = env.JENKINS_FAIL_BUILD == 'true'
-                            if (shouldFail) {
-                                echo "⚠️ JENKINS_FAIL_BUILD=true - failing intentionally"
-                                error("Build failed intentionally (set JENKINS_FAIL_BUILD=false to pass)")
-                            } else {
-                                echo "✅ Tests passed"
-                            }
-                        }
+                        echo "✅ Tests passed"
                     }
                 }
             }
@@ -189,6 +180,17 @@ pipeline {
                 sh "echo 'Security scan result for security-scan-results-s8-a.sarif' > security-scan-results-s8-a.sarif && ls -l security-scan-results-s8-a.sarif"
                 sh "echo 'Security scan result for security-scan-results-s8-b.sarif' > security-scan-results-s8-b.sarif && ls -l security-scan-results-s8-b.sarif"
                 registerSecurityScan artifacts: "security-scan-results-s8-*.sarif", format: "sarif", scanner: "sonarqube"
+            }
+        }
+
+        stage('Finalize') {
+            steps {
+                script {
+                    if (env.JENKINS_FAIL_BUILD == 'true') {
+                        echo "⚠️ JENKINS_FAIL_BUILD=true - failing intentionally"
+                        error("Build failed intentionally (set JENKINS_FAIL_BUILD=false to pass)")
+                    }
+                }
             }
         }
     }
