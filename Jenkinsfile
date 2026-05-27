@@ -142,7 +142,7 @@ pipeline {
                 registerDeployedArtifactMetadata(
                     artifactId: "${env.ARTIFACT_ID}",
                     artifactUrl: "docker.io/pankajydev/jenkins-test-image:${env.IMAGE_TAG}",
-                    targetEnvironment: "pan101",
+                    targetEnvironment: "PAN",
                     labels: "pan1"
                 )
                 echo 'Deploying...'
